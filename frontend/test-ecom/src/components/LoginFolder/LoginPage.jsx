@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import Lottie from "lottie-react";
 import loginAnimation from "./login-animation.json"; // lotty file
 import "./LoginPage.css";
-import { Link, useNavigate } from "react-router-dom";
-import HomePage from "../HomePage";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+// import HomePage from "../HomePage";
+import SignupPage from "../SignupFolder/SignupPage";
 
 const LoginPage = () => {
 
@@ -67,11 +68,13 @@ const LoginPage = () => {
 
           {/* if not account then signup */}
           <p className="register-text">
-            Don’t have an account? <Link> Signup </Link>
+            Don’t have an account? <Link to='/signup'> Signup </Link>
           </p>
         </form>
       </div>
+      {/* <Outlet /> */}
     </div>
+
   );
 }
 
