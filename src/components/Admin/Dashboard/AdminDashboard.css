@@ -1,0 +1,120 @@
+.admin-dashboard {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #1e3c72;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar .logo {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 14px;
+  margin: 10px 0;
+  background: #2a5298;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  text-align: center;
+  font-weight: 500;
+}
+
+.sidebar ul li:hover {
+  background: #3b6cc1;
+  transform: translateY(-2px);
+}
+
+.sidebar ul li.active {
+  background: #4a90e2;
+  font-weight: bold;
+}
+
+.sidebar .logout {
+  margin-top: auto;
+  background: #d9534f;
+}
+
+.sidebar .logout:hover {
+  background: #c9302c;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 30px;
+  background: #f4f6f9;
+}
+
+.main-content h2 {
+  color: #333;
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+
+/* Cards layout */
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 20px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.card h3 {
+  font-size: 20px;
+  color: #1e3c72;
+  margin-bottom: 12px;
+}
+
+.card p {
+  font-size: 16px;
+  color: #555;
+}
+
+.main-content p.error {
+  color: red;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: #1e3c72;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
