@@ -40,7 +40,7 @@ app.use('/', authRoutes);         // Login & Signup for all roles
 // http://localhost:4000/user/signup signup api
 // http://localhost:4000/user/login  login api
 app.use('/products', productRoutes);  // Product browsing & seller management
-app.use('/orders', orderRoutes);      // Customer orders
+// app.use('/orders', orderRoutes);      // Customer orders
 app.use('/admin', adminRoutes);       // Admin dashboard
 
 // Health check route
@@ -51,5 +51,5 @@ app.get('/', (req, res) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
 })

@@ -12,7 +12,7 @@ const initialState = {
   loading: false,
   error: null,
   users: [],    // Store fetched users
-  orders: [],   // Store fetched orders
+  // orders: [],   // Store fetched orders
 };
 
 // Reducer
@@ -44,7 +44,7 @@ const reducer = (state, action) => {
         loading: false,
         error: null,
         users: [],
-        orders: [],
+        // orders: [],
       };
     case "SET_PAGE":
       return { ...state, activePage: action.payload };
@@ -127,18 +127,18 @@ export const AdminProvider = ({ children }) => {
 
 
   // Fetch All Orders
-  const fetchAllOrders = async () => {
-    dispatch({ type: "REQUEST" });
-    try {
-      const res = await axios.get(`${API_URL}/orders`, config);
-      dispatch({ type: "FETCH_ORDERS_SUCCESS", payload: res.data });
-    } catch (err) {
-      dispatch({
-        type: "ERROR",
-        payload: err.response?.data?.message || "Failed to fetch orders",
-      });
-    }
-  };
+  // const fetchAllOrders = async () => {
+  //   dispatch({ type: "REQUEST" });
+  //   try {
+  //     const res = await axios.get(`${API_URL}/orders`, config);
+  //     dispatch({ type: "FETCH_ORDERS_SUCCESS", payload: res.data });
+  //   } catch (err) {
+  //     dispatch({
+  //       type: "ERROR",
+  //       payload: err.response?.data?.message || "Failed to fetch orders",
+  //     });
+  //   }
+  // };
 
   return (
     <AdminContext.Provider
@@ -149,7 +149,7 @@ export const AdminProvider = ({ children }) => {
         signupAdmin,
         logoutAdmin,
         // fetchAllUsers,
-        fetchAllOrders,
+        // fetchAllOrders,
       }}
     >
       {children}

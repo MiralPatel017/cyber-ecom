@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./AdminDashboard.css";
 
 const AdminDashboardPage = () => {
@@ -9,15 +11,18 @@ const AdminDashboardPage = () => {
 
   const [activePage, setActivePage] = useState("dashboard");
   const [user, setUser] = useState({ name: "Admin" });
-  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
   const [users, setUsers] = useState([]);
+  const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleLogout = () => {
-    navigate("/dashboard/login");
+    toast.info("Logging out...");
+    setTimeout(() => navigate("/dashboard/login"), 1500);
   };
 
+  // ✅ Fetch users
   const fetchUsers = async () => {
     setLoading(true);
     setError("");
@@ -31,27 +36,80 @@ const AdminDashboardPage = () => {
     }
   };
 
-  const fetchProducts = async () => {
+  // ✅ Fetch sellers
+  const fetchSellers = async () => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.get(`${API_URL}/users`);
-      setUsers(response.data);
+      const response = await axios.get(`${API_URL}/sellers`);
+      setSellers(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch users");
+      setError(err.response?.data?.message || "Failed to fetch sellers");
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ Fetch products
+  const fetchProducts = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await axios.get(`http://localhost:4000/products`);
+      setProducts(response.data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch Products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Delete handlers with toast
+  const deleteUser = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    try {
+      await axios.delete(`${API_URL}/users/${id}`);
+      setUsers(users.filter((u) => u._id !== id));
+      toast.success("User deleted successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete user");
+    }
+  };
+
+  const deleteSeller = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this seller?")) return;
+    try {
+      await axios.delete(`${API_URL}/sellers/${id}`);
+      setSellers(sellers.filter((s) => s._id !== id));
+      toast.success("Seller deleted successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete seller");
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    try {
+      await axios.delete(`http://localhost:4000/products/${id}`);
+      setProducts(products.filter((p) => p._id !== id));
+      toast.success("Product deleted successfully!");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete product");
+    }
+  };
+
+  // ✅ Fetch data on page switch
   useEffect(() => {
     if (activePage === "users") {
       fetchUsers();
-    } else if (activePage === "orders") {
-      fetchOrders();
+    } else if (activePage === "sellers") {
+      fetchSellers();
+    } else if (activePage === "products") {
+      fetchProducts();
     }
   }, [activePage]);
 
+  // ✅ Render main content
   const renderContent = () => {
     switch (activePage) {
       case "dashboard":
@@ -61,25 +119,23 @@ const AdminDashboardPage = () => {
         return (
           <div>
             <h2>🛒 Manage Products</h2>
-            <p className="loading">Product management coming soon...</p>
-          </div>
-        );
-
-      case "orders":
-        return (
-          <div>
-            <h2>📦 Manage Orders</h2>
             {loading ? (
-              <p className="loading">Loading orders...</p>
+              <p className="loading">Loading products...</p>
             ) : error ? (
               <p className="error">{error}</p>
             ) : (
               <div className="card-list">
-                {orders.map((order) => (
-                  <div className="card" key={order._id}>
-                    <h3>Order ID: {order._id}</h3>
-                    <p><strong>Status:</strong> {order.status}</p>
-                    <p><strong>Total Items:</strong> {order.items?.length || 0}</p>
+                {products.map((product) => (
+                  <div className="card" key={product._id}>
+                    <h3>{product.name}</h3>
+                    <p><strong>Price:</strong> ${product.price}</p>
+                    <p><strong>Description:</strong> {product.description}</p>
+                    <button
+                      className="delete-btn"
+                      onClick={() => deleteProduct(product._id)}
+                    >
+                      ❌ Delete
+                    </button>
                   </div>
                 ))}
               </div>
@@ -101,7 +157,40 @@ const AdminDashboardPage = () => {
                   <div className="card" key={user._id}>
                     <h3>{user.name}</h3>
                     <p><strong>Email:</strong> {user.email}</p>
-                    {/* <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</p> */}
+                    <p><strong>Password:</strong> {user.password}</p>
+                    <button
+                      className="delete-btn"
+                      onClick={() => deleteUser(user._id)}
+                    >
+                      ❌ Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+
+      case "sellers":
+        return (
+          <div>
+            <h2>🏪 Manage Sellers</h2>
+            {loading ? (
+              <p className="loading">Loading sellers...</p>
+            ) : error ? (
+              <p className="error">{error}</p>
+            ) : (
+              <div className="card-list">
+                {sellers.map((seller) => (
+                  <div className="card" key={seller._id}>
+                    <h3>{seller.name}</h3>
+                    <p><strong>Email:</strong> {seller.email}</p>
+                    <button
+                      className="delete-btn"
+                      onClick={() => deleteSeller(seller._id)}
+                    >
+                      ❌ Delete
+                    </button>
                   </div>
                 ))}
               </div>
@@ -132,10 +221,10 @@ const AdminDashboardPage = () => {
             Products
           </li>
           <li
-            className={activePage === "orders" ? "active" : ""}
-            onClick={() => setActivePage("orders")}
+            className={activePage === "sellers" ? "active" : ""}
+            onClick={() => setActivePage("sellers")}
           >
-            Orders
+            Sellers
           </li>
           <li
             className={activePage === "users" ? "active" : ""}
@@ -147,7 +236,10 @@ const AdminDashboardPage = () => {
         </ul>
       </aside>
 
-      <main className="main-content">{renderContent()}</main>
+      <main className="main-content">
+        {renderContent()}
+        <ToastContainer position="top-right" autoClose={2000} />
+      </main>
     </div>
   );
 };

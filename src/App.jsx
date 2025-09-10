@@ -6,10 +6,10 @@ import SellerSignupPage from "./components/sellerComponents/sellerSignupPage/sel
 import SellerLoginPage from "./components/sellerComponents/sellerLoginPage/sellerLoginPage";
 import AdminPage from "./components/Admin/LoginFolder/AdminPage";
 import AdminDashboardPage from "./components/Admin/Dashboard/AdminDashboardPage";
-import SellerDashboardPage from "./components/sellerComponents/sellerDashboardPage";
-import SellerProfile from "./components/sellerComponents/SellerProfile";
-import SellerProducts from "./components/sellerComponents/SellerProducts";
-import SellerAddProduct from "./components/sellerComponents/SellerAddProduct";
+import SellerDashboardPage from "./components/sellerComponents/Product/sellerDashboardPage";
+import SellerProfile from "./components/sellerComponents/Product/SellerProfile";
+import SellerProducts from "./components/sellerComponents/Product/SellerProducts";
+import SellerAddProduct from "./components/sellerComponents/product/SellerAddProduct";
 
 function App() {
   const router = createBrowserRouter([
@@ -21,6 +21,7 @@ function App() {
     // Seller Routes
     { path: "/seller/signup", element: <SellerSignupPage /> },
     { path: "/seller", element: <SellerLoginPage /> },
+    { path: "/seller/login", element: <SellerLoginPage /> },
     {
       path: "/seller/home",
       element: <SellerDashboardPage />,

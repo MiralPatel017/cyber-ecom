@@ -58,7 +58,7 @@ function SellerSignupPage() {
       alert("Signup successful!");
 
       // redirect to login page
-      navigate("/");
+      navigate("/seller");
     } catch (err) {
       setError(err.message);
       console.error("❌ Error:", err.message);
@@ -77,7 +77,7 @@ function SellerSignupPage() {
 
         {/* signup form */}
         <form className="signup-form" onSubmit={handleSubmit}>
-          <h2>Create Seller Account</h2>
+          <h2>Create Your Seller Account</h2>
 
           {/* name */}
           <div className="input-group">
