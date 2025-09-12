@@ -16,13 +16,13 @@ const AdminDashboardPage = () => {
   const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const handleLogout = () => {
     toast.info("Logging out...");
     setTimeout(() => navigate("/dashboard/login"), 1500);
   };
 
-  // ✅ Fetch users
   const fetchUsers = async () => {
     setLoading(true);
     setError("");
@@ -36,7 +36,6 @@ const AdminDashboardPage = () => {
     }
   };
 
-  // ✅ Fetch sellers
   const fetchSellers = async () => {
     setLoading(true);
     setError("");
@@ -50,7 +49,6 @@ const AdminDashboardPage = () => {
     }
   };
 
-  // ✅ Fetch products
   const fetchProducts = async () => {
     setLoading(true);
     setError("");
@@ -64,7 +62,6 @@ const AdminDashboardPage = () => {
     }
   };
 
-  // ✅ Delete handlers with toast
   const deleteUser = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
@@ -98,10 +95,10 @@ const AdminDashboardPage = () => {
     }
   };
 
-  // ✅ Fetch data on page switch
   useEffect(() => {
     if (activePage === "users") {
       fetchUsers();
+      setSelectedUser(null);
     } else if (activePage === "sellers") {
       fetchSellers();
     } else if (activePage === "products") {
@@ -109,7 +106,14 @@ const AdminDashboardPage = () => {
     }
   }, [activePage]);
 
-  // ✅ Render main content
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+  };
+
+  const handleBackToList = () => {
+    setSelectedUser(null);
+  };
+
   const renderContent = () => {
     switch (activePage) {
       case "dashboard":
@@ -147,23 +151,33 @@ const AdminDashboardPage = () => {
         return (
           <div>
             <h2>👥 Manage Users</h2>
+            
             {loading ? (
               <p className="loading">Loading users...</p>
             ) : error ? (
               <p className="error">{error}</p>
+            ) : selectedUser ? (
+              <div className="user-details">
+                <h3>📋 User Details</h3>
+                <p><strong>Name:</strong> {selectedUser.name}</p>
+                <p><strong>Email:</strong> {selectedUser.email}</p>
+                <p><strong>Password:</strong> {selectedUser.password}</p>
+                <p><strong>Phone:</strong> {selectedUser.phone || "N/A"}</p>
+                <button className="back-btn" onClick={handleBackToList}>
+                  🔙 Back to Users List
+                </button>
+              </div>
             ) : (
               <div className="card-list">
                 {users.map((user) => (
-                  <div className="card" key={user._id}>
+                  <div
+                    className="card"
+                    key={user._id}
+                    onClick={() => handleUserClick(user)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <h3>{user.name}</h3>
                     <p><strong>Email:</strong> {user.email}</p>
-                    <p><strong>Password:</strong> {user.password}</p>
-                    <button
-                      className="delete-btn"
-                      onClick={() => deleteUser(user._id)}
-                    >
-                      ❌ Delete
-                    </button>
                   </div>
                 ))}
               </div>
