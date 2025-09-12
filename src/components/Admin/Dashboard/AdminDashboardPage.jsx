@@ -2,6 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell,
+  LineChart, Line
+} from "recharts";
 import "react-toastify/dist/ReactToastify.css";
 import "./AdminDashboard.css";
 
@@ -62,41 +67,12 @@ const AdminDashboardPage = () => {
     }
   };
 
-  const deleteUser = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
-    try {
-      await axios.delete(`${API_URL}/users/${id}`);
-      setUsers(users.filter((u) => u._id !== id));
-      toast.success("User deleted successfully!");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to delete user");
-    }
-  };
-
-  const deleteSeller = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this seller?")) return;
-    try {
-      await axios.delete(`${API_URL}/sellers/${id}`);
-      setSellers(sellers.filter((s) => s._id !== id));
-      toast.success("Seller deleted successfully!");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to delete seller");
-    }
-  };
-
-  const deleteProduct = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-    try {
-      await axios.delete(`http://localhost:4000/products/${id}`);
-      setProducts(products.filter((p) => p._id !== id));
-      toast.success("Product deleted successfully!");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Failed to delete product");
-    }
-  };
-
   useEffect(() => {
-    if (activePage === "users") {
+    if (activePage === "dashboard") {
+      fetchUsers();
+      fetchSellers();
+      fetchProducts();
+    } else if (activePage === "users") {
       fetchUsers();
       setSelectedUser(null);
     } else if (activePage === "sellers") {
@@ -114,10 +90,82 @@ const AdminDashboardPage = () => {
     setSelectedUser(null);
   };
 
+  // Placeholder data for LineChart (growth over last 7 days)
+  const lineChartData = [
+    { date: "2025-09-06", users: 120, sellers: 30, products: 200 },
+    { date: "2025-09-07", users: 125, sellers: 32, products: 210 },
+    { date: "2025-09-08", users: 130, sellers: 33, products: 220 },
+    { date: "2025-09-09", users: 135, sellers: 34, products: 230 },
+    { date: "2025-09-10", users: 140, sellers: 35, products: 240 },
+    { date: "2025-09-11", users: 145, sellers: 36, products: 250 },
+    { date: "2025-09-12", users: 150, sellers: 37, products: 260 },
+  ];
+
+  // Pie Chart Data (proportion)
+  const pieData = [
+    { name: "Users", value: users.length },
+    { name: "Sellers", value: sellers.length },
+    { name: "Products", value: products.length },
+  ];
+
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+
   const renderContent = () => {
     switch (activePage) {
       case "dashboard":
-        return <h2>📊 Welcome {user?.name || "Admin"}!</h2>;
+        return (
+          <div>
+            <h2>📊 Welcome {user?.name || "Admin"}!</h2>
+
+            <div className="chart-section">
+              <h3>📊 Total Counts</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={[
+                  { name: "Users", count: users.length },
+                  { name: "Sellers", count: sellers.length },
+                  { name: "Products", count: products.length }
+                ]}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="count" fill="#82ca9d" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="chart-section">
+              <h3>🥧 Entity Proportions</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie data={pieData} dataKey="value" nameKey="name" outerRadius={100} fill="#8884d8" label>
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            <div className="chart-section">
+              <h3>📈 Growth Over Last 7 Days</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={lineChartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="users" stroke="#8884d8" />
+                  <Line type="monotone" dataKey="sellers" stroke="#82ca9d" />
+                  <Line type="monotone" dataKey="products" stroke="#ffc658" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        );
 
       case "products":
         return (
@@ -151,7 +199,7 @@ const AdminDashboardPage = () => {
         return (
           <div>
             <h2>👥 Manage Users</h2>
-            
+
             {loading ? (
               <p className="loading">Loading users...</p>
             ) : error ? (
