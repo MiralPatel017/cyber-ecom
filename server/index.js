@@ -1,55 +1,46 @@
-// Load environment variables
 require('dotenv').config();
-
-// Import dependencies
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 // Import routes
 const authRoutes = require('./routes/auth.route');
-// const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/peoduct.route');
-const orderRoutes = require('./routes/order.route');
 const adminRoutes = require('./routes/admin.route');
 
-
-// const port = process.env.PORT;
-const mongoURI = process.env.MONGO_URI;
-
-// Initialize Express app
 const app = express();
 
-// Connect to MongoDB
+// Connect DB
 connectDB();
 
 // Middleware
 app.use(cors({
-    origin: "http://localhost:5173",
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
+  origin: "http://localhost:5173",
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
 }));
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(cookieParser())
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// ✅ Serve uploaded images
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
-app.use('/', authRoutes);         // Login & Signup for all roles
-// http://localhost:4000/user/signup signup api
-// http://localhost:4000/user/login  login api
-app.use('/products', productRoutes);  // Product browsing & seller management
-// app.use('/orders', orderRoutes);      // Customer orders
-app.use('/admin', adminRoutes);       // Admin dashboard
+app.use('/', authRoutes);
+app.use('/products', productRoutes);
+app.use('/admin', adminRoutes);
 
-// Health check route
+// Health Check
 app.get('/', (req, res) => {
-    res.send('E-commerce API is running 🚀');
+  res.send('E-commerce API is running 🚀');
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-})
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+});
