@@ -67,6 +67,31 @@ const AdminDashboardPage = () => {
     }
   };
 
+  // Add these functions inside AdminDashboardPage component
+
+  const deleteProduct = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    try {
+      await axios.delete(`http://localhost:4000/products/${id}`);
+      toast.success("Product deleted successfully!");
+      fetchProducts(); // Refresh the products list
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to delete product");
+    }
+  };
+
+  const deleteSeller = async (id) => {
+    if (!window.confirm(`Are you sure you want to delete this seller? seller id :- ${id}`)) return;
+    try {
+      await axios.delete(`${API_URL}/sellers/${id}`);
+      toast.success("Seller deleted successfully!");
+      fetchSellers(); // Refresh the sellers list
+    } catch (err) {
+      toast.error(err.response?.data?.message || `Failed to delete seller`);
+    }
+  };
+
+
   useEffect(() => {
     if (activePage === "dashboard") {
       fetchUsers();

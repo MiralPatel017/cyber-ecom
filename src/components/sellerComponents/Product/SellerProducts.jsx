@@ -18,9 +18,20 @@ function SellerProducts() {
       ) : (
         <ul>
           {products.map((prod, idx) => (
-            <li key={idx}>{prod.name} - {prod.price}</li>
+            <li key={idx}>
+              {prod.image && (
+                <img
+                  src={`http://localhost:4000${prod.image}`}
+                  alt={prod.name}
+                  width="80"
+                  style={{ marginRight: "10px", borderRadius: "6px" }}
+                />
+              )}
+              {prod.name} - ₹{prod.price}
+            </li>
           ))}
         </ul>
+
       )}
     </div>
   );

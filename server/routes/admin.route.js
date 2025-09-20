@@ -2,7 +2,7 @@ const express = require('express');
 const User = require('../modules/user.module');
 const Order = require('../modules/order.module');
 const Seller = require('../modules/seller.module');
-const router = express.Router();
+const   router = express.Router();
 
 // ✅ Get all users
 router.get('/users', async (req, res) => {

@@ -81,21 +81,20 @@ const HomePage = () => {
               <div className="card-list">
                 {products.map((p) => (
                   <div className="card" key={p._id}>
+                    {p.image && (
+                      <img
+                        src={`http://localhost:4000${p.image}`}
+                        alt={p.name}
+                        className="product-img"
+                      />
+                    )}
                     <h3>{p.name}</h3>
-                    <p>
-                      <strong>Price:</strong> ₹{p.price}
-                    </p>
-                    <p>
-                      <strong>Stock:</strong> {p.stock}
-                    </p>
-
-                    {/* Actions */}
+                    <p><strong>Price:</strong> ₹{p.price}</p>
+                    <p><strong>Stock:</strong> {p.stock}</p>
                     <div className="actions">
                       <button className="buy-btn">Buy Now</button>
                       <button
-                        className={`like-btn ${
-                          likedProducts.includes(p._id) ? "liked" : ""
-                        }`}
+                        className={`like-btn ${likedProducts.includes(p._id) ? "liked" : ""}`}
                         onClick={() => toggleLike(p._id)}
                       >
                         {likedProducts.includes(p._id) ? "❤️ Liked" : "🤍 Like"}
@@ -104,6 +103,7 @@ const HomePage = () => {
                   </div>
                 ))}
               </div>
+
             )}
           </div>
         )}
